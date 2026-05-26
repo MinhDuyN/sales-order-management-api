@@ -1,0 +1,26 @@
+﻿name: orderapi
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend_api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ENV_MODE}
+      - ASPNETCORE_URLS=http://+:8080
+      
+      # Ghi đè Connection String trực tiếp
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+      
+      # Ghi đè cấu trúc JwtSettings gốc của bạn
+      - JwtSettings__SecretKey=${JwtSettings__SecretKey}
+      - JwtSettings__Issuer=${JwtSettings__Issuer}
+      - JwtSettings__Audience=${JwtSettings__Audience}
+      - JwtSettings__AccessTokenExpiryMinutes=${JwtSettings__AccessTokenExpiryMinutes}
+      - JwtSettings__RefreshTokenExpiryDays=${JwtSettings__RefreshTokenExpiryDays}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

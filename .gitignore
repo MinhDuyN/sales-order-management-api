@@ -432,3 +432,7 @@ FodyWeavers.xsd
 **/appsettings.json
 **/appsettings.Development.json
 **/appsettings.Production.json
+
+# Env secrets
+**/.env.development
+**/.env.production

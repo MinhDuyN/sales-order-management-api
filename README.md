@@ -14,7 +14,23 @@ Backend REST API cho hệ thống quản lý bán hàng và đơn hàng — Mini
 - Swagger UI
 
 ---
+## Tài khoản test
 
+Hệ thống tự động seed data khi khởi động (cả Docker lẫn local). Dùng các tài khoản sau để test tại Swagger:
+
+| Role     | Email              | Password      |
+|----------|--------------------|---------------|
+| Admin    | admin@erp.com      | admin@erp     |
+| Staff    | staff@erp.com      | staff@erp     |
+| Customer | customer@erp.com   | customer@erp  |
+
+Flow test:
+1.POST /api/auth/login → copy accessToken
+2.Swagger UI → Authorize → dán token vào
+3.Admin: xem Reports, quản lý Users, xác nhận Payment
+4.Customer: tạo Order mới → xem trạng thái
+5.Staff: cập nhật Order status → xử lý Payment
+---
 ## Tính năng chính
 
 - Quản lý User với phân quyền theo Role: Admin / Staff / Customer
@@ -48,16 +64,25 @@ API khởi động tại: `http://localhost:8080/swagger`
 ## Chạy local (không dùng Docker)
 
 **Yêu cầu:** [.NET 8 SDK](https://dotnet.microsoft.com/download) + SQL Server
-
 ```bash
 git clone https://github.com/MinhDuyN/sales-order-management-api
 cd sales-order-management-api
-
-# Cập nhật connection string trong appsettings.json
-# "DefaultConnection": "Server=...;Database=BackendLearningDB;..."
-
-dotnet ef database update
-dotnet run
+```
+**Chạy local bằng SQL Script tại:** `database_seed\DataSeed.sql`
+**Tạo file `appsettings.json`** (tham khảo `.env.example`):
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=BackendLearningDB;User Id=sa;Password=your_password;TrustServerCertificate=True;"
+  },
+  "JwtSettings": {
+    "SecretKey": "your-secret-key-min-32-chars",
+    "Issuer": "SalesOrderAPI",
+    "Audience": "SalesOrderClient",
+    "AccessTokenExpiryMinutes": 15,
+    "RefreshTokenExpiryDays": 7
+  }
+}
 ```
 
 API khởi động tại: `https://localhost:7266/swagger`
@@ -72,7 +97,9 @@ OrderAPI/
 ├── Services/          # Business logic (Interface + Implementation)
 ├── DTOs/              # Request / Response models tách riêng
 ├── Entities/          # EF Core entity classes
-├── Data/              # DbContext
+├── Data/
+│   ├── AppDbContext.cs
+│   └── DataSeed.cs    # Auto seed roles, users, products, orders khi khởi động
 ├── Middlewares/       # Global error handling tập trung
 ├── Exceptions/        # Custom exceptions: NotFound / BadRequest / Conflict
 ├── Migrations/        # EF Core migrations

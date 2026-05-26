@@ -24,12 +24,13 @@ Hệ thống tự động seed data khi khởi động (cả Docker lẫn local)
 | Staff    | staff@erp.com      | staff@erp     |
 | Customer | customer@erp.com   | customer@erp  |
 
-Flow test:
-1.POST /api/auth/login → copy accessToken
-2.Swagger UI → Authorize → dán token vào
-3.Admin: xem Reports, quản lý Users, xác nhận Payment
-4.Customer: tạo Order mới → xem trạng thái
-5.Staff: cập nhật Order status → xử lý Payment
+**Flow test:**
+1. `POST /api/auth/login` → copy `accessToken`
+2. Swagger UI → **Authorize** → dán token vào
+3. Admin: xem Reports, quản lý Users, xác nhận Payment
+4. Customer: tạo Order mới → xem trạng thái
+5. Staff: cập nhật Order status → xử lý Payment
+
 ---
 ## Tính năng chính
 
@@ -69,6 +70,7 @@ git clone https://github.com/MinhDuyN/sales-order-management-api
 cd sales-order-management-api
 ```
 **Chạy local bằng SQL Script tại:** `database_seed\DataSeed.sql`
+
 **Tạo file `appsettings.json`** (tham khảo `.env.example`):
 ```json
 {

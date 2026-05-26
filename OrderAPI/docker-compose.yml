@@ -1,6 +1,24 @@
 ﻿name: orderapi
 
 services:
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: backend_sql_server
+    restart: unless-stopped
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStrong@Password2026
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong@Password2026", "-Q", "SELECT 1", "-C"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   app:
     build:
       context: .
@@ -8,19 +26,19 @@ services:
     container_name: backend_api
     restart: unless-stopped
     ports:
-      - "${API_PORT}:8080"
+      - "8080:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ENV_MODE}
+      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      
-      # Ghi đè Connection String trực tiếp
-      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
-      
-      # Ghi đè cấu trúc JwtSettings gốc của bạn
-      - JwtSettings__SecretKey=${JwtSettings__SecretKey}
-      - JwtSettings__Issuer=${JwtSettings__Issuer}
-      - JwtSettings__Audience=${JwtSettings__Audience}
-      - JwtSettings__AccessTokenExpiryMinutes=${JwtSettings__AccessTokenExpiryMinutes}
-      - JwtSettings__RefreshTokenExpiryDays=${JwtSettings__RefreshTokenExpiryDays}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - ConnectionStrings__DefaultConnection=Server=database;Database=BackendLearningDB;User Id=sa;Password=YourStrong@Password2026;TrustServerCertificate=True;
+      - JwtSettings__SecretKey=SuperSecretKeyForSalesAndOrderManagementAPI2026
+      - JwtSettings__Issuer=SalesOrderAPI
+      - JwtSettings__Audience=SalesOrderClient
+      - JwtSettings__AccessTokenExpiryMinutes=15
+      - JwtSettings__RefreshTokenExpiryDays=7
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  mssql_data:

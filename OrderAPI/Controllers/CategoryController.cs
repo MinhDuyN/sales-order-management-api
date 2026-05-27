@@ -15,7 +15,7 @@ namespace OrderAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize(Roles ="Admin")]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -41,6 +41,7 @@ namespace OrderAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequest request)
         {
             if (!ModelState.IsValid)
@@ -58,6 +59,7 @@ namespace OrderAPI.Controllers
                     createdCategory));
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryRequest request)
         {
             if (!ModelState.IsValid)
@@ -71,6 +73,7 @@ namespace OrderAPI.Controllers
                 $"Update category {id} successfully",
                 updatedCategory));
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

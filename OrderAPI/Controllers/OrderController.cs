@@ -12,7 +12,7 @@ namespace OrderAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -22,7 +22,6 @@ namespace OrderAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetAllOrder(string? keyword=null, int? userId=null, DateTime? startDate = null, DateTime? endDate = null, int page=1, int pageSize=5)
         {
             var isCustomer = User.IsInRole("Customer");
@@ -42,7 +41,6 @@ namespace OrderAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles ="Customer")]
         public async Task<IActionResult> CreateOrder(int userId, CreateOrderRequest request)
         {
             if (!ModelState.IsValid)
@@ -71,7 +69,6 @@ namespace OrderAPI.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> DeleteOrder (int id)
         {
             if (!ModelState.IsValid)
             {

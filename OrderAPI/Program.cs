@@ -69,6 +69,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentServcie>();
+builder.Services.AddScoped<IReportService, ReportService>();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

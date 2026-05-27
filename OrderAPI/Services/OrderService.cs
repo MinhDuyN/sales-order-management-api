@@ -27,7 +27,7 @@ namespace OrderAPI.Services
                 .AsQueryable();
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(query => query.Status == keyword);
+                query = query.Where(query => query.Status.Contains(keyword));
             }
             if (userId.HasValue)
             {

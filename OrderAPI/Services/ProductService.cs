@@ -22,7 +22,7 @@ namespace OrderAPI.Services
                 .AsQueryable();
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(query=>query.ProductName == keyword);
+                query = query.Where(query=>query.ProductName.Contains(keyword));
             }
             if (categoryId.HasValue)
             {

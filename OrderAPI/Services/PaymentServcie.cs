@@ -81,7 +81,7 @@ namespace OrderAPI.Services
                 }
                 else
                 {
-                    throw new BadRequestException($"Just Order Status is Pending must be pay");
+                    throw new BadRequestException($"Order Status must be 'Confirmed' to create payment");
                 }
             }
             else

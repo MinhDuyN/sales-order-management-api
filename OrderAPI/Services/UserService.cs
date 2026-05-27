@@ -22,7 +22,7 @@ namespace OrderAPI.Services
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(query=>query.Name == keyword);
+                query = query.Where(query=>query.Name.Contains(keyword));
             }
             if (!string.IsNullOrWhiteSpace(sortBy))
             {

@@ -72,21 +72,6 @@ builder.Services.AddScoped<IPaymentService, PaymentServcie>();
 builder.Services.AddScoped<IReportService, ReportService>();
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var db = services.GetRequiredService<AppDbContext>();
-        db.Database.Migrate(); // Tự động tạo DB và chạy các file Migration để tạo bảng
-        DataSeed.Seed(db);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Một lỗi đã xảy ra khi tự động tạo dữ liệu (Migration).");
-    }
-}
 //// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

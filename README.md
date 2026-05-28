@@ -18,11 +18,11 @@ Backend REST API cho hệ thống quản lý bán hàng và đơn hàng — Mini
 
 Hệ thống tự động seed data khi khởi động (cả Docker lẫn local). Dùng các tài khoản sau để test tại Swagger:
 
-| Role     | Email              | Password      |
-|----------|--------------------|---------------|
-| Admin    | admin@erp.com      | admin@erp     |
-| Staff    | staff@erp.com      | staff@erp     |
-| Customer | customer@erp.com   | customer@erp  |
+| Role     | Email            | Password     |
+| -------- | ---------------- | ------------ |
+| Admin    | admin@erp.com    | admin@erp    |
+| Staff    | staff@erp.com    | staff@erp    |
+| Customer | customer@erp.com | customer@erp |
 
 **Flow test:**
 1. `POST /api/auth/login` → copy `accessToken`
@@ -53,7 +53,7 @@ Hệ thống tự động seed data khi khởi động (cả Docker lẫn local)
 ```bash
 git clone https://github.com/MinhDuyN/sales-order-management-api
 cd sales-order-management-api
-docker-compose up --build
+docker-compose up --build -d
 ```
 
 API khởi động tại: `http://localhost:8080/swagger`
@@ -62,16 +62,30 @@ API khởi động tại: `http://localhost:8080/swagger`
 
 ---
 
-## Chạy local (không dùng Docker)
+## Visual Studio + SQL Server qua Docker
 
+**Yêu cầu:** [.NET 8 SDK](https://dotnet.microsoft.com/download) + [Docker Desktop](https://www.docker.com/products/docker-desktop)
+```bash
+git clone https://github.com/MinhDuyN/sales-order-management-api
+cd sales-order-management-api
+docker compose up database database-seed -d
+```
+> F5 trong Visual Studio — app tự chạy và seed data.
+---
+
+## Chạy API bằng Visual Studio + SQL Server Local
 **Yêu cầu:** [.NET 8 SDK](https://dotnet.microsoft.com/download) + SQL Server
+
 ```bash
 git clone https://github.com/MinhDuyN/sales-order-management-api
 cd sales-order-management-api
 ```
+
+⚠️ **Lưu ý:** Dùng SQL Server đã cài sẵn, seed data thủ công qua script.
+
 **Chạy local bằng SQL Script tại:** `database_seed\DataSeed.sql`
 
-**Tạo file `appsettings.json`** (tham khảo `.env.example`):
+**Chỉnh sửa `appsettings.json` theo Connection String của cá nhân** (tham khảo `.env.example`):
 ```json
 {
   "ConnectionStrings": {
@@ -87,7 +101,7 @@ cd sales-order-management-api
 }
 ```
 
-API khởi động tại: `https://localhost:7266/swagger`
+> F5 trong Visual Studio.
 
 ---
 
@@ -115,66 +129,66 @@ OrderAPI/
 ## API Endpoints
 
 ### Auth
-| Method | Endpoint | Mô tả | Auth |
-|--------|----------|-------|------|
-| POST | `/api/auth/register` | Đăng ký tài khoản | Public |
-| POST | `/api/auth/login` | Đăng nhập — nhận Access Token + Refresh Token | Public |
-| POST | `/api/auth/refresh-token` | Cấp Access Token mới bằng Refresh Token | Public |
-| POST | `/api/auth/logout` | Đăng xuất — revoke Refresh Token | Required |
+| Method | Endpoint                  | Mô tả                                         | Auth     |
+| ------ | ------------------------- | --------------------------------------------- | -------- |
+| POST   | `/api/auth/register`      | Đăng ký tài khoản                             | Public   |
+| POST   | `/api/auth/login`         | Đăng nhập — nhận Access Token + Refresh Token | Public   |
+| POST   | `/api/auth/refresh-token` | Cấp Access Token mới bằng Refresh Token       | Public   |
+| POST   | `/api/auth/logout`        | Đăng xuất — revoke Refresh Token              | Required |
 
 ### Users
-| Method | Endpoint | Mô tả | Auth |
-|--------|----------|-------|------|
-| GET | `/api/users` | Danh sách user | Admin |
-| GET | `/api/users/{id}` | Chi tiết user | Admin |
-| POST | `/api/users` | Tạo user | Admin |
-| PUT | `/api/users/{id}` | Cập nhật user | Admin |
-| DELETE | `/api/users/{id}` | Xóa user | Admin |
+| Method | Endpoint          | Mô tả          | Auth  |
+| ------ | ----------------- | -------------- | ----- |
+| GET    | `/api/users`      | Danh sách user | Admin |
+| GET    | `/api/users/{id}` | Chi tiết user  | Admin |
+| POST   | `/api/users`      | Tạo user       | Admin |
+| PUT    | `/api/users/{id}` | Cập nhật user  | Admin |
+| DELETE | `/api/users/{id}` | Xóa user       | Admin |
 
 ### Categories
-| Method | Endpoint | Mô tả | Auth |
-|--------|----------|-------|------|
-| GET | `/api/categories` | Danh sách danh mục | Required |
-| GET | `/api/categories/{id}` | Chi tiết danh mục | Required |
-| POST | `/api/categories` | Tạo danh mục | Admin |
-| PUT | `/api/categories/{id}` | Cập nhật danh mục | Admin |
-| DELETE | `/api/categories/{id}` | Xóa danh mục | Admin |
+| Method | Endpoint               | Mô tả              | Auth     |
+| ------ | ---------------------- | ------------------ | -------- |
+| GET    | `/api/categories`      | Danh sách danh mục | Required |
+| GET    | `/api/categories/{id}` | Chi tiết danh mục  | Required |
+| POST   | `/api/categories`      | Tạo danh mục       | Admin    |
+| PUT    | `/api/categories/{id}` | Cập nhật danh mục  | Admin    |
+| DELETE | `/api/categories/{id}` | Xóa danh mục       | Admin    |
 
 ### Products
-| Method | Endpoint | Mô tả | Auth |
-|--------|----------|-------|------|
-| GET | `/api/products` | Danh sách sản phẩm — Pagination / Filter / Sort | Required |
-| GET | `/api/products/{id}` | Chi tiết sản phẩm | Required |
-| POST | `/api/products` | Tạo sản phẩm | Admin |
-| PUT | `/api/products/{id}` | Cập nhật sản phẩm | Admin |
-| DELETE | `/api/products/{id}` | Xóa sản phẩm | Admin |
+| Method | Endpoint             | Mô tả                                           | Auth     |
+| ------ | -------------------- | ----------------------------------------------- | -------- |
+| GET    | `/api/products`      | Danh sách sản phẩm — Pagination / Filter / Sort | Required |
+| GET    | `/api/products/{id}` | Chi tiết sản phẩm                               | Required |
+| POST   | `/api/products`      | Tạo sản phẩm                                    | Admin    |
+| PUT    | `/api/products/{id}` | Cập nhật sản phẩm                               | Admin    |
+| DELETE | `/api/products/{id}` | Xóa sản phẩm                                    | Admin    |
 
 ### Orders
-| Method | Endpoint | Mô tả | Auth |
-|--------|----------|-------|------|
-| POST | `/api/orders` | Tạo đơn hàng — trừ stock, tính total trong 1 transaction | Required |
-| GET | `/api/orders` | Danh sách đơn hàng — Filter / Pagination | Required |
-| GET | `/api/orders/{id}` | Chi tiết đơn hàng + OrderItems | Required |
-| PUT | `/api/orders/{id}/status` | Cập nhật trạng thái — có transition validation | Admin / Staff |
-| DELETE | `/api/orders/{id}` | Xóa đơn hàng — chỉ khi Pending | Required |
+| Method | Endpoint                  | Mô tả                                                    | Auth          |
+| ------ | ------------------------- | -------------------------------------------------------- | ------------- |
+| POST   | `/api/orders`             | Tạo đơn hàng — trừ stock, tính total trong 1 transaction | Required      |
+| GET    | `/api/orders`             | Danh sách đơn hàng — Filter / Pagination                 | Required      |
+| GET    | `/api/orders/{id}`        | Chi tiết đơn hàng + OrderItems                           | Required      |
+| PUT    | `/api/orders/{id}/status` | Cập nhật trạng thái — có transition validation           | Admin / Staff |
+| DELETE | `/api/orders/{id}`        | Xóa đơn hàng — chỉ khi Pending                           | Required      |
 
 ### Payments
-| Method | Endpoint | Mô tả | Auth |
-|--------|----------|-------|------|
-| POST | `/api/payments` | Ghi nhận thanh toán cho Order | Required |
-| GET | `/api/payments/{id}` | Chi tiết thanh toán | Required |
-| PUT | `/api/payments/{id}` | Xác nhận (Paid) hoặc Từ chối (Failed) | Admin / Staff |
+| Method | Endpoint             | Mô tả                                 | Auth          |
+| ------ | -------------------- | ------------------------------------- | ------------- |
+| POST   | `/api/payments`      | Ghi nhận thanh toán cho Order         | Required      |
+| GET    | `/api/payments/{id}` | Chi tiết thanh toán                   | Required      |
+| PUT    | `/api/payments/{id}` | Xác nhận (Paid) hoặc Từ chối (Failed) | Admin / Staff |
 
 ### Reports
-| Method | Endpoint | Mô tả | Auth |
-|--------|----------|-------|------|
-| GET | `/api/reports/revenue` | Tổng doanh thu theo khoảng thời gian | Admin |
-| GET | `/api/reports/revenue/daily` | Doanh thu theo ngày | Admin |
-| GET | `/api/reports/revenue/monthly` | Doanh thu theo tháng | Admin |
-| GET | `/api/reports/top-products` | Top sản phẩm bán chạy | Admin |
-| GET | `/api/reports/top-users` | Top user theo doanh thu | Admin |
-| GET | `/api/reports/category-revenue` | Doanh thu theo danh mục | Admin |
-| GET | `/api/reports/active-users` | User active trong N ngày gần nhất | Admin |
+| Method | Endpoint                        | Mô tả                                | Auth  |
+| ------ | ------------------------------- | ------------------------------------ | ----- |
+| GET    | `/api/reports/revenue`          | Tổng doanh thu theo khoảng thời gian | Admin |
+| GET    | `/api/reports/revenue/daily`    | Doanh thu theo ngày                  | Admin |
+| GET    | `/api/reports/revenue/monthly`  | Doanh thu theo tháng                 | Admin |
+| GET    | `/api/reports/top-products`     | Top sản phẩm bán chạy                | Admin |
+| GET    | `/api/reports/top-users`        | Top user theo doanh thu              | Admin |
+| GET    | `/api/reports/category-revenue` | Doanh thu theo danh mục              | Admin |
+| GET    | `/api/reports/active-users`     | User active trong N ngày gần nhất    | Admin |
 
 ---
 
@@ -206,11 +220,11 @@ Register → Login → [Access Token + Refresh Token]
 
 ## Phân quyền
 
-| Role | Quyền |
-|------|-------|
-| Admin | Toàn bộ hệ thống |
-| Staff | Quản lý Order, Payment — xem Report |
-| Customer | Tạo và xem Order của mình |
+| Role     | Quyền                               |
+| -------- | ----------------------------------- |
+| Admin    | Toàn bộ hệ thống                    |
+| Staff    | Quản lý Order, Payment — xem Report |
+| Customer | Tạo và xem Order của mình           |
 
 ---
 
@@ -242,10 +256,10 @@ Các endpoint khác trả `ApiResponse<T>` thống nhất. DELETE giữ 204 theo
 
 Project hỗ trợ cấu hình qua environment variable — không cần sửa code khi deploy:
 
-| Variable | Mô tả |
-|----------|-------|
+| Variable                               | Mô tả                        |
+| -------------------------------------- | ---------------------------- |
 | `ConnectionStrings__DefaultConnection` | Connection string SQL Server |
-| `JwtSettings__SecretKey` | JWT secret key |
-| `JwtSettings__Issuer` | JWT issuer |
-| `JwtSettings__Audience` | JWT audience |
-| `ASPNETCORE_ENVIRONMENT` | `Development` / `Production` |
+| `JwtSettings__SecretKey`               | JWT secret key               |
+| `JwtSettings__Issuer`                  | JWT issuer                   |
+| `JwtSettings__Audience`                | JWT audience                 |
+| `ASPNETCORE_ENVIRONMENT`               | `Development` / `Production` |

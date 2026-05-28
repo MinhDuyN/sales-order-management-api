@@ -21,7 +21,7 @@ services:
 
   app:
     build:
-      context: .
+      context: ./OrderAPI
       dockerfile: Dockerfile
     container_name: backend_api
     restart: unless-stopped
@@ -42,3 +42,4 @@ services:
 
 volumes:
   mssql_data:
+    name: orderapi_mssql_data

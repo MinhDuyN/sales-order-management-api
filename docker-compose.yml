@@ -6,7 +6,7 @@ services:
     container_name: backend_sql_server
     restart: unless-stopped
     ports:
-      - "1433:1433"
+      - "9999:1433"
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=YourStrong@Password2026
@@ -18,6 +18,22 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # Tái sử dụng file DataSeed.sql để tự động dựng DB cho Docker
+  database-seed:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: backend_sql_seed
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./database_seed:/usr/src/database_seed # Map thư mục chứa file SQL của bạn vào container
+    entrypoint: >
+      /bin/bash -c "
+      echo '=== [Docker-Init] Đang tiến hành chạy file DataSeed.sql để khởi tạo cấu trúc... ===';
+      /opt/mssql-tools18/bin/sqlcmd -S database -U sa -P YourStrong@Password2026 -C -i /usr/src/database_seed/DataSeed.sql;
+      echo '=== [Docker-Init] Hoàn thành import cấu trúc và dữ liệu mẫu thành công! ===';
+      "
 
   app:
     build:

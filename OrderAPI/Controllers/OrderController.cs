@@ -69,6 +69,7 @@ namespace OrderAPI.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> DeleteOrder(int id)
         {
             if (!ModelState.IsValid)
             {
